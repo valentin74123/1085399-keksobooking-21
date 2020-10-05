@@ -1,6 +1,6 @@
 'use strict';
 
-let OFFER_TYPE = [
+let OFFER_TYPES = [
   `palace`,
   `flat`,
   `house`,
@@ -19,13 +19,7 @@ let OFFER_GUESTS = [
   `Не для гостей`
 ];
 
-let OFFER_CHECKIN = [
-  `12:00`,
-  `13:00`,
-  `14:00`
-];
-
-let OFFER_CHECKOUT = [
+let OFFER_CHECKIN_CHECKOUT = [
   `12:00`,
   `13:00`,
   `14:00`
@@ -46,13 +40,13 @@ let OFFER_PHOTOS = [
   `http://o0.github.io/assets/images/tokyo/hotel3.jpg`
 ];
 
-let LOCATION_X = 100;
-let LOCATION_X_MAX = 900;
-let LOCATION_OFFSET_X = 20;
+let LOCATION_X = 0;
+let LOCATION_X_MAX = 1200;
+let LOCATION_OFFSET_X = 50;
 
 let LOCATION_Y = 130;
-let LOCATION_Y_MAX = 500;
-let LOCATION_OFFSET_Y = 20;
+let LOCATION_Y_MAX = 630;
+let LOCATION_OFFSET_Y = 70;
 
 let APARTMENTS_COUNT = 8;
 
@@ -64,7 +58,7 @@ let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 let renderPin = function (apartment) {
   let pinElement = pin.cloneNode(true);
 
-  pinElement.style.cssText = `left: ` + (apartment.location.x + LOCATION_OFFSET_X) + `px; top: ` + (apartment.location.y + LOCATION_OFFSET_Y) + `px;`;
+  pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_OFFSET_X)) + `px; top: ` + (apartment.location.y - LOCATION_OFFSET_Y) + `px;`;
   pinElement.getElementsByTagName(`IMG`).src = apartment.author.avatar;
   pinElement.getElementsByTagName(`IMG`).alt = apartment.offer.title;
   return pinElement;
@@ -75,15 +69,13 @@ let randomInteger = function (min, max) {
   return Math.floor(rand);
 };
 
-let unique = function (arr) {
+let deleteRepetitions = function (arr) {
   let result = [];
-
   for (let str of arr) {
     if (!result.includes(str)) {
       result.push(str);
     }
   }
-
   return result;
 };
 
@@ -91,21 +83,16 @@ let generateApartments = function (count) {
   let apartments = [];
 
   for (let apartmentNumber = 1; apartmentNumber <= count; apartmentNumber++) {
-    let location_ = {
-      x: LOCATION_X + Math.floor(Math.random() * Math.floor(LOCATION_X_MAX)),
-      y: LOCATION_Y + Math.floor(Math.random() * Math.floor(LOCATION_Y_MAX)),
-    };
-
-    let features = [];
+    let generateFeatures = [];
     let lengthFeatures = randomInteger(1, OFFER_FEATURES.length);
     for (let i = 0; i < lengthFeatures; i++) {
-      features.push(OFFER_FEATURES[randomInteger(0, OFFER_FEATURES.length - 1)]);
+      generateFeatures.push(OFFER_FEATURES[randomInteger(0, OFFER_FEATURES.length - 1)]);
     }
 
-    let photos = [];
-    let lengthphotos = randomInteger(1, OFFER_PHOTOS.length);
-    for (let i = 0; i < lengthphotos; i++) {
-      photos.push(OFFER_PHOTOS[randomInteger(0, OFFER_PHOTOS.length - 1)]);
+    let generatePhotos = [];
+    let lengthPhotos = randomInteger(1, OFFER_PHOTOS.length);
+    for (let i = 0; i < lengthPhotos; i++) {
+      generatePhotos.push(OFFER_PHOTOS[randomInteger(0, OFFER_PHOTOS.length - 1)]);
     }
 
 
@@ -113,19 +100,22 @@ let generateApartments = function (count) {
       author: {
         avatar: `img/avatars/user0` + apartmentNumber + `.png`
       },
-      location: location_,
+      location: {
+        x: randomInteger(LOCATION_X + LOCATION_OFFSET_X, LOCATION_X_MAX - LOCATION_OFFSET_X),
+        y: randomInteger(LOCATION_Y + LOCATION_OFFSET_Y, LOCATION_Y_MAX - LOCATION_OFFSET_X),
+      },
       offer: {
         title: `заголовок предложения`,
-        address: location_.x + `, ` + location_.y,
-        price: `стоимость`,
-        type: OFFER_TYPE[Math.floor(Math.random() * OFFER_TYPE.length)],
-        rooms: OFFER_ROOMS[Math.floor(Math.random() * OFFER_ROOMS.length)],
-        guests: OFFER_GUESTS[Math.floor(Math.random() * OFFER_GUESTS.length)],
-        checkin: OFFER_CHECKIN[Math.floor(Math.random() * OFFER_CHECKIN.length)],
-        checkout: OFFER_CHECKOUT[Math.floor(Math.random() * OFFER_CHECKOUT.length)],
-        features: unique(features),
+        address: location.x + `, ` + location.y,
+        price: Number(`1`),
+        type: OFFER_TYPES[randomInteger(0, OFFER_TYPES.length - 1)],
+        rooms: OFFER_ROOMS[randomInteger(0, OFFER_ROOMS.length - 1)],
+        guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length)],
+        checkin: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
+        checkout: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
+        features: deleteRepetitions(generateFeatures),
         description: `описание`,
-        photos: photos,
+        photos: generatePhotos,
       }
     });
   }
