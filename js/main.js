@@ -42,11 +42,11 @@ let OFFER_PHOTOS = [
 
 let LOCATION_X = 0;
 let LOCATION_X_MAX = 1200;
-let LOCATION_OFFSET_X = 50;
+let LOCATION_PIN_WIDTH = 50;
 
 let LOCATION_Y = 130;
 let LOCATION_Y_MAX = 630;
-let LOCATION_OFFSET_Y = 70;
+let LOCATION_PIN_HEIGHT = 70;
 
 let APARTMENTS_COUNT = 8;
 
@@ -57,10 +57,12 @@ let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
 let renderPin = function (apartment) {
   let pinElement = pin.cloneNode(true);
+  let elMapPinImage = pinElement.querySelector(`img`);
 
-  pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_OFFSET_X)) + `px; top: ` + (apartment.location.y - LOCATION_OFFSET_Y) + `px;`;
-  pinElement.getElementsByTagName(`IMG`).src = apartment.author.avatar;
-  pinElement.getElementsByTagName(`IMG`).alt = apartment.offer.title;
+  elMapPinImage.src = apartment.author.avatar;
+  elMapPinImage.alt = apartment.offer.title;
+
+  pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_PIN_WIDTH)) + `px; top: ` + (apartment.location.y - LOCATION_PIN_HEIGHT) + `px;`;
   return pinElement;
 };
 
@@ -95,19 +97,20 @@ let generateApartments = function (count) {
       generatePhotos.push(OFFER_PHOTOS[randomInteger(0, OFFER_PHOTOS.length - 1)]);
     }
 
+    let locationAddress = {
+      x: randomInteger(LOCATION_X + LOCATION_PIN_WIDTH, LOCATION_X_MAX - LOCATION_PIN_WIDTH),
+      y: randomInteger(LOCATION_Y + LOCATION_PIN_HEIGHT, LOCATION_Y_MAX - LOCATION_PIN_HEIGHT),
+    };
 
     apartments.push({
       author: {
         avatar: `img/avatars/user0` + apartmentNumber + `.png`
       },
-      location: {
-        x: randomInteger(LOCATION_X + LOCATION_OFFSET_X, LOCATION_X_MAX - LOCATION_OFFSET_X),
-        y: randomInteger(LOCATION_Y + LOCATION_OFFSET_Y, LOCATION_Y_MAX - LOCATION_OFFSET_X),
-      },
+      location: locationAddress,
       offer: {
         title: `заголовок предложения`,
-        address: location.x + `, ` + location.y,
-        price: Number(`1`),
+        address: locationAddress.x + `, ` + locationAddress.y,
+        price: randomInteger(500, 10000),
         type: OFFER_TYPES[randomInteger(0, OFFER_TYPES.length - 1)],
         rooms: OFFER_ROOMS[randomInteger(0, OFFER_ROOMS.length - 1)],
         guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length)],
