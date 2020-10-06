@@ -48,6 +48,9 @@ let LOCATION_Y = 130;
 let LOCATION_Y_MAX = 630;
 let LOCATION_PIN_HEIGHT = 70;
 
+let PRICE_MIN = 500;
+let PRICE_MAX = 10000;
+
 let APARTMENTS_COUNT = 8;
 
 let map = document.querySelector(`.map`);
@@ -110,7 +113,7 @@ let generateApartments = function (count) {
       offer: {
         title: `заголовок предложения`,
         address: locationAddress.x + `, ` + locationAddress.y,
-        price: randomInteger(500, 10000),
+        price: randomInteger(PRICE_MIN, PRICE_MAX),
         type: OFFER_TYPES[randomInteger(0, OFFER_TYPES.length - 1)],
         rooms: OFFER_ROOMS[randomInteger(0, OFFER_ROOMS.length - 1)],
         guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length)],
