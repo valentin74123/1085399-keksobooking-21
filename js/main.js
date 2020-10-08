@@ -57,7 +57,6 @@ let map = document.querySelector(`.map`);
 map.classList.remove(`map--faded`);
 
 let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-
 let renderPin = function (apartment) {
   let pinElement = pin.cloneNode(true);
   let elMapPinImage = pinElement.querySelector(`img`);
@@ -67,6 +66,33 @@ let renderPin = function (apartment) {
 
   pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_PIN_WIDTH)) + `px; top: ` + (apartment.location.y - LOCATION_PIN_HEIGHT) + `px;`;
   return pinElement;
+};
+
+let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
+let renderApartments = function (apartment) {
+  let apartmentElement = card.cloneNode(true);
+
+  apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
+  apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
+  apartmentElement.querySelector(`.popup__text--price`).textContent = apartment.offer.price + `₽/ночь`;
+  apartmentElement.querySelector(`.popup__type`).textContent = apartment.offer.type;//
+  apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` комнаты для ` + apartment.offer.guests + ` гостей`;//
+  apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
+  apartmentElement.querySelector(`.popup__features`).textContent = apartment.offer.features;
+  apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
+
+
+  let photos = apartmentElement.querySelector(`.popup__photos`);
+  for (let i = 0; i < apartment.offer.photos.length; i++) {
+    let photoElements = photos.querySelectorAll(`.popup__photo`);
+    for (let j = 0; j < photoElements.length; j++) {
+      photoElements[j].src = apartment.offer.photos[j];
+    }
+  }
+
+  apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
+
+  return apartmentElement;
 };
 
 let randomInteger = function (min, max) {
@@ -135,5 +161,12 @@ for (let i = 0; i < apartments.length; i++) {
   pinFragment.appendChild(renderPin(apartments[i]));
 }
 
+let apartmentsFragment = document.createDocumentFragment();
+for (let i = 0; i < apartments.length; i++) {
+  apartmentsFragment.appendChild(renderApartments(apartments[i]));
+}
+
 document.querySelector(`.map__pins`).appendChild(pinFragment);
+document.querySelector(`.map__pins`).appendChild(apartmentsFragment);
+
 
