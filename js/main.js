@@ -7,6 +7,13 @@ let OFFER_TYPES = [
   `bungalow`
 ];
 
+let OFFER_TYPES_TRANSLATED = [
+  `Дворец`,
+  `Квартира`,
+  `Дом`,
+  `Бунгало`
+];
+
 let OFFER_ROOMS = [
   `Одна комната`,
   `Две комнаты`,
@@ -83,17 +90,28 @@ let renderApartments = function (apartment) {
 
 
   let photos = apartmentElement.querySelector(`.popup__photos`);
+
+  let photosArr = []; // Массив фотографий
+  let photo = photos.querySelector(`.popup__photo`);
+  let photoElement = photo.cloneNode(true);
   for (let i = 0; i < apartment.offer.photos.length; i++) {
-    let photoElements = photos.querySelectorAll(`.popup__photo`);
-    for (let j = 0; j < photoElements.length; j++) {
-      photoElements[j].src = apartment.offer.photos[j];
-    }
+    photoElement.src = apartment.offer.photos[i];
+
+    photosArr.push(photos.appendChild(photoElement));
+
   }
 
   apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
 
   return apartmentElement;
 };
+
+let myMap = new Map(); // Перевод массива
+for (let i = 0; i < OFFER_TYPES.length; i++) {
+  myMap.set(OFFER_TYPES[i], OFFER_TYPES_TRANSLATED[i]);
+  myMap.get(OFFER_TYPES[i]);
+
+}
 
 let randomInteger = function (min, max) {
   let rand = min + Math.random() * (max + 1 - min);
@@ -142,7 +160,7 @@ let generateApartments = function (count) {
         price: randomInteger(PRICE_MIN, PRICE_MAX),
         type: OFFER_TYPES[randomInteger(0, OFFER_TYPES.length - 1)],
         rooms: OFFER_ROOMS[randomInteger(0, OFFER_ROOMS.length - 1)],
-        guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length)],
+        guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length - 1)],
         checkin: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
         checkout: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
         features: deleteRepetitions(generateFeatures),
