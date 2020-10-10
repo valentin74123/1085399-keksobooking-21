@@ -21,9 +21,9 @@ let OFFER_ROOMS = [
 ];
 
 let OFFER_GUESTS = [
-  `Два гостя`,
-  `Один гость`,
-  `Не для гостей`
+  `двух гостей`,
+  `одного гостя`,
+  `не для гостей`
 ];
 
 let OFFER_CHECKIN_CHECKOUT = [
@@ -63,6 +63,11 @@ let APARTMENTS_COUNT = 8;
 let map = document.querySelector(`.map`);
 map.classList.remove(`map--faded`);
 
+let translatedOfferTypes = new Map();
+for (let i = 0; i < OFFER_TYPES.length; i++) {
+  translatedOfferTypes.set(OFFER_TYPES[i], OFFER_TYPES_TRANSLATED[i]);
+}
+
 let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 let renderPin = function (apartment) {
   let pinElement = pin.cloneNode(true);
@@ -82,8 +87,8 @@ let renderApartments = function (apartment) {
   apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
   apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
   apartmentElement.querySelector(`.popup__text--price`).textContent = apartment.offer.price + `₽/ночь`;
-  apartmentElement.querySelector(`.popup__type`).textContent = apartment.offer.type;//
-  apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` комнаты для ` + apartment.offer.guests + ` гостей`;//
+  apartmentElement.querySelector(`.popup__type`).textContent = translatedOfferTypes.get(apartment.offer.type);
+  apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;//
   apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
   apartmentElement.querySelector(`.popup__features`).textContent = apartment.offer.features;
   apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
@@ -91,27 +96,18 @@ let renderApartments = function (apartment) {
 
   let photos = apartmentElement.querySelector(`.popup__photos`);
 
-  let photosArr = []; // Массив фотографий
+
   let photo = photos.querySelector(`.popup__photo`);
-  let photoElement = photo.cloneNode(true);
   for (let i = 0; i < apartment.offer.photos.length; i++) {
+    let photoElement = photo.cloneNode(true);
     photoElement.src = apartment.offer.photos[i];
-
-    photosArr.push(photos.appendChild(photoElement));
-
+    photos.appendChild(photoElement);
   }
-
+  photo.parentNode.removeChild(photo);
   apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
 
   return apartmentElement;
 };
-
-let myMap = new Map(); // Перевод массива
-for (let i = 0; i < OFFER_TYPES.length; i++) {
-  myMap.set(OFFER_TYPES[i], OFFER_TYPES_TRANSLATED[i]);
-  myMap.get(OFFER_TYPES[i]);
-
-}
 
 let randomInteger = function (min, max) {
   let rand = min + Math.random() * (max + 1 - min);
@@ -165,7 +161,7 @@ let generateApartments = function (count) {
         checkout: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
         features: deleteRepetitions(generateFeatures),
         description: `описание`,
-        photos: generatePhotos,
+        photos: deleteRepetitions(generatePhotos),
       }
     });
   }
@@ -186,5 +182,3 @@ for (let i = 0; i < apartments.length; i++) {
 
 document.querySelector(`.map__pins`).appendChild(pinFragment);
 document.querySelector(`.map__pins`).appendChild(apartmentsFragment);
-
-
