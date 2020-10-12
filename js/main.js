@@ -59,6 +59,7 @@ let PRICE_MIN = 500;
 let PRICE_MAX = 10000;
 
 let APARTMENTS_COUNT = 8;
+let CARDS_COUNT = 1;
 
 let map = document.querySelector(`.map`);
 map.classList.remove(`map--faded`);
@@ -90,13 +91,19 @@ let renderApartments = function (apartment) {
   apartmentElement.querySelector(`.popup__type`).textContent = translatedOfferTypes.get(apartment.offer.type);
   apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;//
   apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
-  apartmentElement.querySelector(`.popup__features`).textContent = apartment.offer.features;
+
+  let features = apartmentElement.querySelector(`.popup__features`);
+  let feature = features.querySelector(`.popup__feature`);
+  for (let i = 0; i < apartment.offer.features.length; i++) {
+    let featureElement = feature.cloneNode(true);
+    featureElement.classList.add(`popup__feature--` + apartment.offer.features[i]);
+    features.appendChild(featureElement);
+  }
+  feature.parentNode.removeChild(feature);
+
   apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
 
-
   let photos = apartmentElement.querySelector(`.popup__photos`);
-
-
   let photo = photos.querySelector(`.popup__photo`);
   for (let i = 0; i < apartment.offer.photos.length; i++) {
     let photoElement = photo.cloneNode(true);
@@ -104,6 +111,7 @@ let renderApartments = function (apartment) {
     photos.appendChild(photoElement);
   }
   photo.parentNode.removeChild(photo);
+
   apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
 
   return apartmentElement;
@@ -176,7 +184,7 @@ for (let i = 0; i < apartments.length; i++) {
 }
 
 let apartmentsFragment = document.createDocumentFragment();
-for (let i = 0; i < apartments.length; i++) {
+for (let i = 0; i < CARDS_COUNT; i++) {
   apartmentsFragment.appendChild(renderApartments(apartments[i]));
 }
 
