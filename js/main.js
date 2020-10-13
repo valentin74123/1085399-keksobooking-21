@@ -61,61 +61,133 @@ let PRICE_MAX = 10000;
 let APARTMENTS_COUNT = 8;
 let CARDS_COUNT = 1;
 
+let MAIN_PIN_WIDTH = 62;
+let MAIN_PIN_HEIGHT = 84;
+
 let map = document.querySelector(`.map`);
-map.classList.remove(`map--faded`);
+let addForm = document.querySelector(`.ad-form`);
+let mapFilters = document.querySelectorAll(`.map__filter`);
+
+let mainPin = document.querySelector(`.map__pin--main`);
+let addressMainPin = document.querySelector(`#address`);
+
+for (let i = 0; i < mapFilters.length; i++) {
+  mapFilters[i].setAttribute(`disabled`, `disabled`);
+}
+
+let openMap = function () {
+  let pinMainX = parseInt((mainPin.style.left), 10) + (MAIN_PIN_WIDTH * 0.5);
+  let pinMainY = parseInt((mainPin.style.top), 10) + MAIN_PIN_HEIGHT;
+  map.classList.remove(`map--faded`);
+  addForm.classList.remove(`ad-form--disabled`);
+  addressMainPin.value = pinMainX + `, ` + pinMainY;
+  for (let i = 0; i < mapFilters.length; i++) {
+    mapFilters[i].removeAttribute(`disabled`);
+  }
+
+  //  отрисовка пинов
+  let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+  let renderPin = function (apartment) {
+    let pinElement = pin.cloneNode(true);
+    let elMapPinImage = pinElement.querySelector(`img`);
+
+    elMapPinImage.src = apartment.author.avatar;
+    elMapPinImage.alt = apartment.offer.title;
+
+    pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_PIN_WIDTH)) + `px; top: ` + (apartment.location.y - LOCATION_PIN_HEIGHT) + `px;`;
+    return pinElement;
+  };
+
+
+  let pinFragment = document.createDocumentFragment();
+  for (let i = 0; i < apartments.length; i++) {
+    pinFragment.appendChild(renderPin(apartments[i]));
+  }
+
+
+  document.querySelector(`.map__pins`).appendChild(pinFragment);
+
+  //  отрисовка карточек
+  let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
+  let renderApartments = function (apartment) {
+    let apartmentElement = card.cloneNode(true);
+
+    apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
+    apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
+    apartmentElement.querySelector(`.popup__text--price`).textContent = apartment.offer.price + `₽/ночь`;
+    apartmentElement.querySelector(`.popup__type`).textContent = translatedOfferTypes.get(apartment.offer.type);
+    apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;//
+    apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
+
+    let features = apartmentElement.querySelector(`.popup__features`);
+    let feature = features.querySelector(`.popup__feature`);
+    for (let i = 0; i < apartment.offer.features.length; i++) {
+      let featureElement = feature.cloneNode(true);
+      featureElement.classList.add(`popup__feature--` + apartment.offer.features[i]);
+      features.appendChild(featureElement);
+    }
+    feature.parentNode.removeChild(feature);
+
+    apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
+
+    let photos = apartmentElement.querySelector(`.popup__photos`);
+    let photo = photos.querySelector(`.popup__photo`);
+    for (let i = 0; i < apartment.offer.photos.length; i++) {
+      let photoElement = photo.cloneNode(true);
+      photoElement.src = apartment.offer.photos[i];
+      photos.appendChild(photoElement);
+    }
+    photo.parentNode.removeChild(photo);
+
+    apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
+
+    return apartmentElement;
+  };
+
+
+  let apartmentsFragment = document.createDocumentFragment();
+  for (let i = 0; i < CARDS_COUNT; i++) {
+    apartmentsFragment.appendChild(renderApartments(apartments[i]));
+  }
+
+
+  document.querySelector(`.map__pins`).appendChild(apartmentsFragment);
+};
+
+mainPin.addEventListener(`mousedown`, function (evt) {
+  if (evt.which === 1) {
+    openMap();
+  }
+});
+mainPin.addEventListener(`keydown`, function (evt) {
+  if (evt.key === `Enter`) {
+    openMap();
+  }
+});
+
+let buttonSubmit = document.querySelector(`.ad-form__submit`);
+let roomNumber = document.querySelector(`#room_number`);
+let capacity = document.querySelector(`#capacity`);
+let checkOption = function () {
+  let roomNumberOption = roomNumber.options[roomNumber.selectedIndex].value;
+  let capacityOption = capacity.options[capacity.selectedIndex].value;
+  if (roomNumberOption !== capacityOption) {
+    buttonSubmit.setAttribute(`disabled`, `disabled`);
+  }
+};
+
+roomNumber.addEventListener(`change`, function () {
+  checkOption();
+});
+capacity.addEventListener(`change`, function () {
+  checkOption();
+});
+
 
 let translatedOfferTypes = new Map();
 for (let i = 0; i < OFFER_TYPES.length; i++) {
   translatedOfferTypes.set(OFFER_TYPES[i], OFFER_TYPES_TRANSLATED[i]);
 }
-
-let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-let renderPin = function (apartment) {
-  let pinElement = pin.cloneNode(true);
-  let elMapPinImage = pinElement.querySelector(`img`);
-
-  elMapPinImage.src = apartment.author.avatar;
-  elMapPinImage.alt = apartment.offer.title;
-
-  pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_PIN_WIDTH)) + `px; top: ` + (apartment.location.y - LOCATION_PIN_HEIGHT) + `px;`;
-  return pinElement;
-};
-
-let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
-let renderApartments = function (apartment) {
-  let apartmentElement = card.cloneNode(true);
-
-  apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
-  apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
-  apartmentElement.querySelector(`.popup__text--price`).textContent = apartment.offer.price + `₽/ночь`;
-  apartmentElement.querySelector(`.popup__type`).textContent = translatedOfferTypes.get(apartment.offer.type);
-  apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;//
-  apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
-
-  let features = apartmentElement.querySelector(`.popup__features`);
-  let feature = features.querySelector(`.popup__feature`);
-  for (let i = 0; i < apartment.offer.features.length; i++) {
-    let featureElement = feature.cloneNode(true);
-    featureElement.classList.add(`popup__feature--` + apartment.offer.features[i]);
-    features.appendChild(featureElement);
-  }
-  feature.parentNode.removeChild(feature);
-
-  apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
-
-  let photos = apartmentElement.querySelector(`.popup__photos`);
-  let photo = photos.querySelector(`.popup__photo`);
-  for (let i = 0; i < apartment.offer.photos.length; i++) {
-    let photoElement = photo.cloneNode(true);
-    photoElement.src = apartment.offer.photos[i];
-    photos.appendChild(photoElement);
-  }
-  photo.parentNode.removeChild(photo);
-
-  apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
-
-  return apartmentElement;
-};
 
 let randomInteger = function (min, max) {
   let rand = min + Math.random() * (max + 1 - min);
@@ -177,16 +249,3 @@ let generateApartments = function (count) {
 };
 
 let apartments = generateApartments(APARTMENTS_COUNT);
-
-let pinFragment = document.createDocumentFragment();
-for (let i = 0; i < apartments.length; i++) {
-  pinFragment.appendChild(renderPin(apartments[i]));
-}
-
-let apartmentsFragment = document.createDocumentFragment();
-for (let i = 0; i < CARDS_COUNT; i++) {
-  apartmentsFragment.appendChild(renderApartments(apartments[i]));
-}
-
-document.querySelector(`.map__pins`).appendChild(pinFragment);
-document.querySelector(`.map__pins`).appendChild(apartmentsFragment);
