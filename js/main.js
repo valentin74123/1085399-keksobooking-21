@@ -7,6 +7,13 @@ let OFFER_TYPES = [
   `bungalow`
 ];
 
+let OFFER_TYPES_TRANSLATED = [
+  `Дворец`,
+  `Квартира`,
+  `Дом`,
+  `Бунгало`
+];
+
 let OFFER_ROOMS = [
   `Одна комната`,
   `Две комнаты`,
@@ -14,9 +21,9 @@ let OFFER_ROOMS = [
 ];
 
 let OFFER_GUESTS = [
-  `Два гостя`,
-  `Один гость`,
-  `Не для гостей`
+  `двух гостей`,
+  `одного гостя`,
+  `не для гостей`
 ];
 
 let OFFER_CHECKIN_CHECKOUT = [
@@ -52,12 +59,17 @@ let PRICE_MIN = 500;
 let PRICE_MAX = 10000;
 
 let APARTMENTS_COUNT = 8;
+let CARDS_COUNT = 1;
 
 let map = document.querySelector(`.map`);
 map.classList.remove(`map--faded`);
 
-let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+let translatedOfferTypes = new Map();
+for (let i = 0; i < OFFER_TYPES.length; i++) {
+  translatedOfferTypes.set(OFFER_TYPES[i], OFFER_TYPES_TRANSLATED[i]);
+}
 
+let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 let renderPin = function (apartment) {
   let pinElement = pin.cloneNode(true);
   let elMapPinImage = pinElement.querySelector(`img`);
@@ -67,6 +79,42 @@ let renderPin = function (apartment) {
 
   pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_PIN_WIDTH)) + `px; top: ` + (apartment.location.y - LOCATION_PIN_HEIGHT) + `px;`;
   return pinElement;
+};
+
+let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
+let renderApartments = function (apartment) {
+  let apartmentElement = card.cloneNode(true);
+
+  apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
+  apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
+  apartmentElement.querySelector(`.popup__text--price`).textContent = apartment.offer.price + `₽/ночь`;
+  apartmentElement.querySelector(`.popup__type`).textContent = translatedOfferTypes.get(apartment.offer.type);
+  apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;//
+  apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
+
+  let features = apartmentElement.querySelector(`.popup__features`);
+  let feature = features.querySelector(`.popup__feature`);
+  for (let i = 0; i < apartment.offer.features.length; i++) {
+    let featureElement = feature.cloneNode(true);
+    featureElement.classList.add(`popup__feature--` + apartment.offer.features[i]);
+    features.appendChild(featureElement);
+  }
+  feature.parentNode.removeChild(feature);
+
+  apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
+
+  let photos = apartmentElement.querySelector(`.popup__photos`);
+  let photo = photos.querySelector(`.popup__photo`);
+  for (let i = 0; i < apartment.offer.photos.length; i++) {
+    let photoElement = photo.cloneNode(true);
+    photoElement.src = apartment.offer.photos[i];
+    photos.appendChild(photoElement);
+  }
+  photo.parentNode.removeChild(photo);
+
+  apartmentElement.querySelector(`.popup__avatar`).src = apartment.author.avatar;
+
+  return apartmentElement;
 };
 
 let randomInteger = function (min, max) {
@@ -116,12 +164,12 @@ let generateApartments = function (count) {
         price: randomInteger(PRICE_MIN, PRICE_MAX),
         type: OFFER_TYPES[randomInteger(0, OFFER_TYPES.length - 1)],
         rooms: OFFER_ROOMS[randomInteger(0, OFFER_ROOMS.length - 1)],
-        guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length)],
+        guests: OFFER_GUESTS[randomInteger(0, OFFER_GUESTS.length - 1)],
         checkin: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
         checkout: OFFER_CHECKIN_CHECKOUT[randomInteger(0, OFFER_CHECKIN_CHECKOUT.length - 1)],
         features: deleteRepetitions(generateFeatures),
         description: `описание`,
-        photos: generatePhotos,
+        photos: deleteRepetitions(generatePhotos),
       }
     });
   }
@@ -135,5 +183,10 @@ for (let i = 0; i < apartments.length; i++) {
   pinFragment.appendChild(renderPin(apartments[i]));
 }
 
-document.querySelector(`.map__pins`).appendChild(pinFragment);
+let apartmentsFragment = document.createDocumentFragment();
+for (let i = 0; i < CARDS_COUNT; i++) {
+  apartmentsFragment.appendChild(renderApartments(apartments[i]));
+}
 
+document.querySelector(`.map__pins`).appendChild(pinFragment);
+document.querySelector(`.map__pins`).appendChild(apartmentsFragment);
