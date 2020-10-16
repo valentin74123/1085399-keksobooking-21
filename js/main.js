@@ -71,19 +71,53 @@ let mapFilters = document.querySelectorAll(`.map__filter`);
 let mainPin = document.querySelector(`.map__pin--main`);
 let addressMainPin = document.querySelector(`#address`);
 
-for (let i = 0; i < mapFilters.length; i++) {
-  mapFilters[i].setAttribute(`disabled`, `disabled`);
-}
+let formElements = addForm.elements;
+let getElemtsDisabled = function (elements) {
+  for (let i = 0; i < elements.length; ++i) {
+    elements[i].setAttribute(`disabled`, `disabled`);
+  }
+};
+getElemtsDisabled(mapFilters);
+getElemtsDisabled(formElements);
+
+let pinMainX = parseInt((mainPin.style.left), 10) + (MAIN_PIN_WIDTH * 0.5);
+let pinMainY = parseInt((mainPin.style.top), 10) + MAIN_PIN_HEIGHT;
+addressMainPin.value = pinMainX + `, ` + pinMainY;
 
 let openMap = function () {
-  let pinMainX = parseInt((mainPin.style.left), 10) + (MAIN_PIN_WIDTH * 0.5);
-  let pinMainY = parseInt((mainPin.style.top), 10) + MAIN_PIN_HEIGHT;
   map.classList.remove(`map--faded`);
   addForm.classList.remove(`ad-form--disabled`);
-  addressMainPin.value = pinMainX + `, ` + pinMainY;
-  for (let i = 0; i < mapFilters.length; i++) {
-    mapFilters[i].removeAttribute(`disabled`);
-  }
+
+  let getElemtsUnDisabled = function (elements) {
+    for (let i = 0; i < elements.length; ++i) {
+      elements[i].removeAttribute(`disabled`);
+    }
+  };
+  getElemtsUnDisabled(mapFilters);
+  getElemtsUnDisabled(formElements);
+
+  //  кнопка Опубликовать
+  let buttonSubmit = document.querySelector(`.ad-form__submit`);
+  let roomNumber = document.querySelector(`#room_number`);
+  let capacity = document.querySelector(`#capacity`);
+  let checkOption = function () {
+    let roomNumberOption = roomNumber.options[roomNumber.selectedIndex].value;
+    let capacityOption = capacity.options[capacity.selectedIndex].value;
+    if (roomNumberOption !== capacityOption) {
+
+      buttonSubmit.setCustomValidity(`Выбрано неравное количество комнат и мест!`);
+    } else {
+
+      buttonSubmit.setCustomValidity(``);
+    }
+  };
+
+  roomNumber.addEventListener(`change`, function () {
+    checkOption();
+  });
+  capacity.addEventListener(`change`, function () {
+    checkOption();
+  });
 
   //  отрисовка пинов
   let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
@@ -163,24 +197,6 @@ mainPin.addEventListener(`keydown`, function (evt) {
   if (evt.key === `Enter`) {
     openMap();
   }
-});
-
-let buttonSubmit = document.querySelector(`.ad-form__submit`);
-let roomNumber = document.querySelector(`#room_number`);
-let capacity = document.querySelector(`#capacity`);
-let checkOption = function () {
-  let roomNumberOption = roomNumber.options[roomNumber.selectedIndex].value;
-  let capacityOption = capacity.options[capacity.selectedIndex].value;
-  if (roomNumberOption !== capacityOption) {
-    buttonSubmit.setAttribute(`disabled`, `disabled`);
-  }
-};
-
-roomNumber.addEventListener(`change`, function () {
-  checkOption();
-});
-capacity.addEventListener(`change`, function () {
-  checkOption();
 });
 
 
