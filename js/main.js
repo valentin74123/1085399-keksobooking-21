@@ -81,7 +81,7 @@ getElemtsDisabled(mapFilters);
 getElemtsDisabled(formElements);
 
 let pinMainX = parseInt((mainPin.style.left), 10) + (MAIN_PIN_WIDTH * 0.5);
-let pinMainY = parseInt((mainPin.style.top), 10) + MAIN_PIN_HEIGHT;
+let pinMainY = parseInt((mainPin.style.top), 10) + (MAIN_PIN_HEIGHT * 0.5);
 addressMainPin.value = pinMainX + `, ` + pinMainY;
 
 let openMap = function () {
@@ -95,6 +95,9 @@ let openMap = function () {
   };
   getElemtsUnDisabled(mapFilters);
   getElemtsUnDisabled(formElements);
+
+  pinMainY = parseInt((mainPin.style.top), 10) + MAIN_PIN_HEIGHT;
+  addressMainPin.value = pinMainX + `, ` + pinMainY;
 
   //  кнопка Опубликовать
   let buttonSubmit = document.querySelector(`.ad-form__submit`);
