@@ -208,7 +208,6 @@ let openMap = function () {
 
 
   //  кнопка Опубликовать
-  let buttonSubmit = document.querySelector(`.ad-form__submit`);
   let roomNumber = document.querySelector(`#room_number`);
   let capacity = document.querySelector(`#capacity`);
   let checkOption = function () {
@@ -216,10 +215,10 @@ let openMap = function () {
     let capacityOption = capacity.options[capacity.selectedIndex].value;
     if (roomNumberOption !== capacityOption) {
 
-      buttonSubmit.setCustomValidity(`Выбрано неравное количество комнат и мест!`);
+      roomNumber.setCustomValidity(`Количество комнат и мест должны быть равны!`);
     } else {
 
-      buttonSubmit.setCustomValidity(``);
+      roomNumber.setCustomValidity(``);
     }
   };
 
@@ -300,30 +299,40 @@ let openMap = function () {
       let apartmentsFragment = document.createDocumentFragment();
 
       let closeCard = function () {
-        mapPins.querySelector(`article`).parentNode.removeChild(mapPins.querySelector(`article`));
+        mapPins.querySelector(`.popup`).remove();
       };
 
-      if (mapPins.querySelector(`article`)) {
+      if (mapPins.querySelector(`.popup`)) {
         closeCard();
       }
 
 
       apartmentsFragment.appendChild(renderApartments(apartments[i]));
-
       mapPins.appendChild(apartmentsFragment);
 
-      let buttonClose = mapPins.querySelector(`article`).querySelector(`.popup__close`);
-
-
+      let buttonClose = mapPins.querySelector(`.popup`).querySelector(`.popup__close`);
       buttonClose.addEventListener(`click`, function () {
         closeCard();
       });
 
-      window.addEventListener(`keydown`, function (button) {
+      let isEscEvent = function (button) {
+        if (button.key === `Escape`) {
+          closeCard();
+        }
+        window.removeEventListener(`keydown`, isEscEvent);
+      };
+      window.addEventListener(`keydown`, isEscEvent);
+
+      /*  window.addEventListener(`keydown`, function (button) {
         if (button.key === `Escape`) {
           closeCard();
         }
       });
+      window.removeEventListener(`keydown`, function (button) {
+        if (button.key === `Escape`) {
+          closeCard();
+        }
+      }); */
     });
   }
 
