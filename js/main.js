@@ -298,8 +298,16 @@ let openMap = function () {
 
       let apartmentsFragment = document.createDocumentFragment();
 
+      let isEscEvent = function (button) {
+        if (button.key === `Escape`) {
+          closeCard();
+        }
+      };
+      window.addEventListener(`keydown`, isEscEvent);
+
       let closeCard = function () {
         mapPins.querySelector(`.popup`).remove();
+        window.removeEventListener(`keydown`, isEscEvent);
       };
 
       if (mapPins.querySelector(`.popup`)) {
@@ -314,25 +322,6 @@ let openMap = function () {
       buttonClose.addEventListener(`click`, function () {
         closeCard();
       });
-
-      let isEscEvent = function (button) {
-        if (button.key === `Escape`) {
-          closeCard();
-        }
-        window.removeEventListener(`keydown`, isEscEvent);
-      };
-      window.addEventListener(`keydown`, isEscEvent);
-
-      /*  window.addEventListener(`keydown`, function (button) {
-        if (button.key === `Escape`) {
-          closeCard();
-        }
-      });
-      window.removeEventListener(`keydown`, function (button) {
-        if (button.key === `Escape`) {
-          closeCard();
-        }
-      }); */
     });
   }
 
