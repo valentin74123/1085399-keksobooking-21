@@ -10,51 +10,51 @@ let mainPin = document.querySelector(`.map__pin--main`);
 //  валидация формы
 let formElements = addForm.elements;
 
-window.getElemtsDisabled(mapFilters);
-window.getElemtsDisabled(formElements);
+window.form.getElemtsDisabled(mapFilters);
+window.form.getElemtsDisabled(formElements);
 
 //  главный пин координаты
-window.pinMainCoords(0.5);
+window.pin.pinMainCoords(0.5);
 
 let openMap = function () {
   map.classList.remove(`map--faded`);
 
   //  главный пин координаты при открытии
-  window.pinMainCoords(1);
+  window.pin.pinMainCoords(1);
 
   //  валидация формы
   (function () {
     addForm.classList.remove(`ad-form--disabled`);
 
-    window.getElemtsUnDisabled(mapFilters);
-    window.getElemtsUnDisabled(formElements);
+    window.form.getElemtsUnDisabled(mapFilters);
+    window.form.getElemtsUnDisabled(formElements);
 
 
-    window.typeOfHousing.addEventListener(`change`, function () {
-      window.changePricePerNight();
+    window.form.typeOfHousing.addEventListener(`change`, function () {
+      window.form.changePricePerNight();
     });
 
 
-    window.timeIn.addEventListener(`change`, function () {
-      window.changeTime(window.timeOut, window.timeIn.value);
+    window.form.timeIn.addEventListener(`change`, function () {
+      window.form.changeTime(window.form.timeOut, window.form.timeIn.value);
     });
-    window.timeOut.addEventListener(`change`, function () {
-      window.changeTime(window.timeIn, window.timeOut.value);
+    window.form.timeOut.addEventListener(`change`, function () {
+      window.form.changeTime(window.form.timeIn, window.form.timeOut.value);
     });
 
 
-    window.roomNumber.addEventListener(`change`, function () {
-      window.checkOption();
+    window.form.roomNumber.addEventListener(`change`, function () {
+      window.form.checkOption();
     });
-    window.capacity.addEventListener(`change`, function () {
-      window.checkOption();
+    window.form.capacity.addEventListener(`change`, function () {
+      window.form.checkOption();
     });
   })();
 
-  window.zxc();
+  window.map.generatePinsAndCards();
 };
 
 //  активация по нажатию на главный пин
-window.mousedownOpen(mainPin, openMap);
-window.enterOpen(mainPin, openMap);
+window.util.mousedownOpen(mainPin, openMap);
+window.util.enterOpen(mainPin, openMap);
 

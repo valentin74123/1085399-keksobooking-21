@@ -7,9 +7,11 @@
 
   let addressMainPin = document.querySelector(`#address`);
 
-  window.pinMainCoords = function (num) {
-    let pinMainX = parseInt((mainPin.style.left), 10) + (MAIN_PIN_WIDTH * 0.5);
-    let pinMainY = parseInt((mainPin.style.top), 10) + (MAIN_PIN_HEIGHT * num);
-    addressMainPin.value = pinMainX + `, ` + pinMainY;
+  window.pin = {
+    pinMainCoords(num) {
+      let pinMainX = parseInt((mainPin.style.left), 10) + (MAIN_PIN_WIDTH * 0.5);
+      let pinMainY = parseInt((mainPin.style.top), 10) + (MAIN_PIN_HEIGHT * num);
+      addressMainPin.value = pinMainX + `, ` + pinMainY;
+    }
   };
 })();
