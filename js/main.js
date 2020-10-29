@@ -51,10 +51,13 @@ let openMap = function () {
     });
   })();
 
+  window.util.mousedownOpenDelete(mainPin);
   window.map.generatePinsAndCards();
 };
 
 //  активация по нажатию на главный пин
 window.util.mousedownOpen(mainPin, openMap);
 window.util.enterOpen(mainPin, openMap);
+
+window.util.mousedownMove(mainPin);
 
