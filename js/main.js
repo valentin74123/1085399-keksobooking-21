@@ -10,8 +10,13 @@ let mainPin = document.querySelector(`.map__pin--main`);
 //  валидация формы
 let formElements = addForm.elements;
 
-window.form.getElemtsDisabled(mapFilters);
-window.form.getElemtsDisabled(formElements);
+window.mapClose = function () {
+  map.classList.add(`map--faded`);
+  window.form.getElemtsDisabled(mapFilters);
+  window.form.getElemtsDisabled(formElements);
+  addForm.classList.add(`ad-form--disabled`);
+};
+window.mapClose();
 
 //  главный пин координаты
 window.pin.pinMainCoords(0.5);
@@ -51,9 +56,9 @@ let openMap = function () {
     });
   })();
 
-  window.util.mousedownOpenDelete(mainPin);
-  window.map.generatePinsAndCards();
+
 };
+window.util.mousedownPins(mainPin, openMap);
 
 //  активация по нажатию на главный пин
 window.util.mousedownOpen(mainPin, openMap);
