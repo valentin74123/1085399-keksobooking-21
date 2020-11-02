@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  // let LOCATION_X = 0;
+  // let LOCATION_X_MAX = 1135;
+
+  // let LOCATION_Y = 130;
+  // let LOCATION_Y_MAX = 630;
+
   window.util = {
     mousedownOpen(el, functionOpen) {
       el.addEventListener(`mousemove`, function (evt) {
@@ -65,8 +71,25 @@
           el.style.top = (el.offsetTop - shift.y) + `px`;
           el.style.left = (el.offsetLeft - shift.x) + `px`;
 
-          if (parseInt(el.style.top, 10) < 130 || parseInt(el.style.top, 10) > 630 || parseInt(el.style.left, 10) < 0 || parseInt(el.style.left, 10) > 1200) {
-            window.mapClose();
+          // let limitCoords = function (coords, limit) {
+          //   if (parseInt(coords, 10) < limit) {
+          //     coords = limit + `px`;
+          //   }
+          // }
+          // limitCoords(el.style.top, LOCATION_Y);
+
+
+          if (parseInt(el.style.top, 10) < 130) {
+            el.style.top = 130 + `px`;
+          }
+          if (parseInt(el.style.top, 10) > 630) {
+            el.style.top = 630 + `px`;
+          }
+          if (parseInt(el.style.left, 10) < 0) {
+            el.style.left = 0 + `px`;
+          }
+          if (parseInt(el.style.left, 10) > 1135) {
+            el.style.left = 1135 + `px`;
           }
         };
 
