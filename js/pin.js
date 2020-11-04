@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  let MAIN_PIN_WIDTH = 62;
-  let MAIN_PIN_HEIGHT = 84;
+  const MAIN_PIN_WIDTH = 62;
+  const MAIN_PIN_HEIGHT = 84;
   let mainPin = document.querySelector(`.map__pin--main`);
 
   let addressMainPin = document.querySelector(`#address`);
