@@ -1,11 +1,12 @@
 'use strict';
 
 (function () {
-  let LOCATION_X = 0;
-  let LOCATION_X_MAX = 1135;
+  const LOCATION_X = 0;
+  const LOCATION_X_MAX = 1200;
+  const MAIN_PIN_WIDTH = 62;
 
-  let LOCATION_Y = 130;
-  let LOCATION_Y_MAX = 630;
+  const LOCATION_Y = 130;
+  const LOCATION_Y_MAX = 630;
 
   window.util = {
     mousedownOpen(el, functionOpen) {
@@ -78,11 +79,11 @@
           if (parseInt(el.style.top, 10) > LOCATION_Y_MAX) {
             el.style.top = LOCATION_Y_MAX + `px`;
           }
-          if (parseInt(el.style.left, 10) < LOCATION_X) {
-            el.style.left = LOCATION_X + `px`;
+          if (parseInt(el.style.left, 10) < LOCATION_X - (MAIN_PIN_WIDTH * 0.5)) {
+            el.style.left = LOCATION_X - (MAIN_PIN_WIDTH * 0.5) + `px`;
           }
-          if (parseInt(el.style.left, 10) > LOCATION_X_MAX) {
-            el.style.left = LOCATION_X_MAX + `px`;
+          if (parseInt(el.style.left, 10) > LOCATION_X_MAX - (MAIN_PIN_WIDTH * 0.5)) {
+            el.style.left = LOCATION_X_MAX - (MAIN_PIN_WIDTH * 0.5) + `px`;
           }
         };
 

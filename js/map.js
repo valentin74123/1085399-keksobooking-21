@@ -2,10 +2,10 @@
 
 window.map = {
   generatePinsAndCards() {
-    let LOCATION_PIN_WIDTH = 50;
-    let LOCATION_PIN_HEIGHT = 70;
-    let APARTMENTS_COUNT = 8;
-    let apartments = window.data.generateApartments(APARTMENTS_COUNT);
+    const LOCATION_PIN_WIDTH = 50;
+    const LOCATION_PIN_HEIGHT = 70;
+    const APARTMENTS_COUNT = 8;
+    // let apartments = window.data.generateApartments(APARTMENTS_COUNT);
 
     let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
@@ -20,14 +20,29 @@ window.map = {
       return pinElement;
     };
 
-    let pinFragment = document.createDocumentFragment();
-    for (let i = 0; i < apartments.length; i++) {
-      pinFragment.appendChild(renderPin(apartments[i]));
-    }
-
     let mapPins = document.querySelector(`.map__pins`);
-    mapPins.appendChild(pinFragment);
 
+    let successHandler = function (apartments) {
+      let pinFragment = document.createDocumentFragment();
+
+      for (let i = 0; i < APARTMENTS_COUNT; i++) {
+        pinFragment.appendChild(renderPin(apartments[i]));
+      }
+
+      mapPins.appendChild(pinFragment);
+    };
+    let errorHandler = function (errorMessage) {
+      let node = document.createElement(`div`);
+      node.style = `z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white;`;
+      node.style.position = `absolute`;
+      node.style.left = 0;
+      node.style.right = 0;
+      node.style.fontSize = `30px`;
+
+      node.textContent = errorMessage;
+      document.body.insertAdjacentElement(`afterbegin`, node);
+    };
+    window.backend.load(successHandler, errorHandler);
 
     let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
     let renderCards = function (apartment) {
