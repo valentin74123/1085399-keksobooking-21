@@ -8,6 +8,11 @@
   const LOCATION_Y = 130;
   const LOCATION_Y_MAX = 630;
 
+  let map = document.querySelector(`.map`);
+  let mapFilters = document.querySelectorAll(`.map__filter`);
+  let addForm = document.querySelector(`.ad-form`);
+  let formElements = addForm.elements;
+
   window.util = {
     mousedownOpen(el, functionOpen) {
       el.addEventListener(`mousemove`, function (evt) {
@@ -106,8 +111,24 @@
         document.addEventListener(`mousemove`, onMouseMove);
         document.addEventListener(`mouseup`, onMouseUp);
       });
+    },
 
+    mapClose() {
+      map.classList.add(`map--faded`);
+      window.form.getElemtsDisabled(mapFilters);
+      window.form.getElemtsDisabled(formElements);
+      addForm.classList.add(`ad-form--disabled`);
+    },
 
+    closeModalWindow(el) {
+      document.addEventListener(`click`, function () {
+        document.querySelector(el).remove();
+      }, {once: true});
+      document.addEventListener(`keydown`, function (evt) {
+        if (evt.key === `Escape`) {
+          document.querySelector(el).remove();
+        }
+      }, {once: true});
     }
   };
 })();

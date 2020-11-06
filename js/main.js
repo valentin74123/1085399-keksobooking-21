@@ -10,13 +10,7 @@ let mainPin = document.querySelector(`.map__pin--main`);
 //  валидация формы
 let formElements = addForm.elements;
 
-window.mapClose = function () {
-  map.classList.add(`map--faded`);
-  window.form.getElemtsDisabled(mapFilters);
-  window.form.getElemtsDisabled(formElements);
-  addForm.classList.add(`ad-form--disabled`);
-};
-window.mapClose();
+window.util.mapClose();
 
 //  главный пин координаты
 window.pin.pinMainCoords(0.5);
