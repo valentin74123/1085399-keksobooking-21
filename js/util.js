@@ -44,8 +44,7 @@
           functionOpen();
           window.map.generatePinsAndCards();
         }
-
-      }, {once: true});
+      });
     },
 
     mousedownMove(el) {
@@ -118,6 +117,11 @@
       window.form.getElemtsDisabled(mapFilters);
       window.form.getElemtsDisabled(formElements);
       addForm.classList.add(`ad-form--disabled`);
+      let mapPins = document.querySelector(`.map__pins`);
+      let pins = mapPins.querySelectorAll(`button[type]`);
+      pins.forEach(function (pin) {
+        pin.style.display = `none`;
+      });
     },
 
     closeModalWindow(el) {

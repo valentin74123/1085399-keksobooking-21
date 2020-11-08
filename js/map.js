@@ -7,10 +7,19 @@ window.map = {
     const APARTMENTS_COUNT = 8;
     // let apartments = window.data.generateApartments(APARTMENTS_COUNT);
 
-    let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+    let pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+
+    let allPins = document.querySelectorAll(`.map__pin`);
+    if (allPins.length > 1) {
+      allPins.forEach(function (pin) {
+        pin.style.display = `block`;
+      });
+      return;
+    }
+
 
     let renderPin = function (apartment) {
-      let pinElement = pin.cloneNode(true);
+      let pinElement = pinTemplate.cloneNode(true);
       let elMapPinImage = pinElement.querySelector(`img`);
 
       elMapPinImage.src = apartment.author.avatar;
