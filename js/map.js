@@ -7,10 +7,19 @@ window.map = {
     const APARTMENTS_COUNT = 8;
     // let apartments = window.data.generateApartments(APARTMENTS_COUNT);
 
-    let pin = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+    let pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+
+    let allPins = document.querySelectorAll(`.map__pin`);
+    if (allPins.length > 1) {
+      allPins.forEach(function (pin) {
+        pin.style.display = `block`;
+      });
+      return;
+    }
+
 
     let renderPin = function (apartment) {
-      let pinElement = pin.cloneNode(true);
+      let pinElement = pinTemplate.cloneNode(true);
       let elMapPinImage = pinElement.querySelector(`img`);
 
       elMapPinImage.src = apartment.author.avatar;
@@ -43,6 +52,43 @@ window.map = {
       document.body.insertAdjacentElement(`afterbegin`, node);
     };
     window.backend.load(successHandler, errorHandler);
+
+
+    let showContent = function () {
+      let success = document.querySelector(`#success`);
+
+      let clone = success.content.cloneNode(true);
+
+      document.body.appendChild(clone);
+
+      window.util.closeModalWindow(`.success`);
+    };
+    let errorForm = function () {
+      let error = document.querySelector(`#error`);
+
+      let clone = error.content.cloneNode(true);
+
+      document.body.appendChild(clone);
+
+      let errorButton = document.querySelector(`.error__button`);
+      errorButton.addEventListener(`click`, function () {
+        document.querySelector(`.error`).remove();
+      }, {once: true});
+
+      window.util.closeModalWindow(`.error`);
+    };
+
+
+    let form = document.querySelector(`.ad-form`);
+    let submitHandler = function (evt) {
+      window.backend.save(new FormData(form), function () {
+        window.util.mapClose();
+        showContent();
+        form.reset();
+      }, errorForm);
+      evt.preventDefault();
+    };
+    form.addEventListener(`submit`, submitHandler);
 
     let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
     let renderCards = function (apartment) {
