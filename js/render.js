@@ -6,7 +6,18 @@
 
   const APARTMENTS_COUNT = 5;
   let pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+  let mapPins = document.querySelector(`.map__pins`);
 
+  let isEscEvent = function (button) {
+    if (button.key === `Escape`) {
+      window.closeCard();
+    }
+  };
+
+  window.closeCard = function () {
+    mapPins.querySelector(`.popup`).remove();
+    window.removeEventListener(`keydown`, isEscEvent);
+  };
 
   let renderPin = function (apartment) {
     let pinElement = pinTemplate.cloneNode(true);
@@ -20,8 +31,7 @@
   };
 
   window.renderPins = function (apartments) {
-    let mapPins = document.querySelector(`.map__pins`);
-    let pins = mapPins.querySelectorAll(`button[type]`);
+    let pins = document.querySelector(`.map__pins`).querySelectorAll(`button[type]`);
 
     pins.forEach(function (pin) {
       pin.remove();
@@ -30,13 +40,31 @@
     let takeNumber = apartments.length > APARTMENTS_COUNT ? APARTMENTS_COUNT : apartments.length;
 
     for (let i = 0; i < takeNumber; i++) {
-      mapPins.appendChild(renderPin(apartments[i]));
+      let pin = renderPin(apartments[i]);
+
+      mapPins.appendChild(pin);
+      pin.addEventListener(`click`, function (evt) {
+        evt.preventDefault();
+        if (mapPins.querySelector(`.popup`)) {
+          window.closeCard();
+        }
+
+        window.openCard(apartments[i]);
+
+        window.addEventListener(`keydown`, isEscEvent);
+
+        let buttonClose = mapPins.querySelector(`.popup`).querySelector(`.popup__close`);
+        buttonClose.addEventListener(`click`, function () {
+          window.closeCard();
+        });
+      });
     }
   };
 
 
-  let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
   let renderCard = function (apartment) {
+    let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
+
     let apartmentElement = card.cloneNode(true);
 
     apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
@@ -71,18 +99,8 @@
     return apartmentElement;
   };
 
-  window.renderCards = function (apartments) {
-    let mapPins = document.querySelector(`.map__pins`);
-
-    let takeNumber = apartments.length > APARTMENTS_COUNT ? APARTMENTS_COUNT : apartments.length;
-
-    for (let i = 0; i < takeNumber; i++) {
-      mapPins.appendChild(renderCard(apartments[i]));
-    }
-
-
-    // let apartmentsFragment = document.createDocumentFragment();
-    // apartmentsFragment.appendChild(renderCard(apartments[i]));
-    // mapPins.appendChild(apartmentsFragment);
+  window.openCard = function (apartment) {
+    let card = renderCard(apartment);
+    mapPins.appendChild(card);
   };
 })();
