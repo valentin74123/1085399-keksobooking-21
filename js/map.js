@@ -2,7 +2,7 @@
 
 (function () {
   window.map = {
-    generatePinsAndCards() {
+    generatePins() {
       window.apartments = [];
 
 

@@ -15,7 +15,9 @@
   };
 
   window.closeCard = function () {
-    mapPins.querySelector(`.popup`).remove();
+    if (mapPins.querySelector(`.popup`)) {
+      mapPins.querySelector(`.popup`).remove();
+    }
     window.removeEventListener(`keydown`, isEscEvent);
   };
 

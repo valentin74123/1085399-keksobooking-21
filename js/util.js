@@ -13,7 +13,14 @@
   let addForm = document.querySelector(`.ad-form`);
   let formElements = addForm.elements;
 
+
+  let isPinsExist = function () {
+    let pins = document.querySelector(`.map__pins`).querySelectorAll(`button[type]`);
+    return pins.length > 0;
+  }
+
   window.util = {
+
     mousedownOpen(el, functionOpen) {
       el.addEventListener(`mousemove`, function (evt) {
         if (evt.which === 1) {
@@ -42,7 +49,9 @@
       el.addEventListener(`mousedown`, function (evt) {
         if (evt.which === 1) {
           functionOpen();
-          window.map.generatePinsAndCards();
+          if (!isPinsExist()){
+            window.map.generatePins()
+          }
         }
       });
     },
