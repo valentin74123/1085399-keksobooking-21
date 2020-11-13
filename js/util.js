@@ -13,6 +13,12 @@
   let addForm = document.querySelector(`.ad-form`);
   let formElements = addForm.elements;
 
+
+  let isPinsExist = function () {
+    let pins = document.querySelector(`.map__pins`).querySelectorAll(`button[type]`);
+    return pins.length > 0;
+  };
+
   window.util = {
     mousedownOpen(el, functionOpen) {
       el.addEventListener(`mousemove`, function (evt) {
@@ -42,7 +48,9 @@
       el.addEventListener(`mousedown`, function (evt) {
         if (evt.which === 1) {
           functionOpen();
-          window.map.generatePinsAndCards();
+          if (!isPinsExist()) {
+            window.map.generatePins();
+          }
         }
       });
     },
@@ -120,7 +128,7 @@
       let mapPins = document.querySelector(`.map__pins`);
       let pins = mapPins.querySelectorAll(`button[type]`);
       pins.forEach(function (pin) {
-        pin.style.display = `none`;
+        pin.remove();
       });
     },
 
@@ -130,9 +138,25 @@
       }, {once: true});
       document.addEventListener(`keydown`, function (evt) {
         if (evt.key === `Escape`) {
-          document.querySelector(el).remove();
+          document.querySelector(el).style.display = `none`;
         }
       }, {once: true});
+    },
+
+    createErrorMessage(errorMessage) {
+      let node = document.createElement(`div`);
+      node.style = `z-index: 100; margin: 0 auto; text-align: center; background-color: red; color: white;`;
+      node.style.position = `absolute`;
+      node.style.left = 0;
+      node.style.right = 0;
+      node.style.fontSize = `30px`;
+
+      node.textContent = errorMessage;
+      document.body.insertAdjacentElement(`afterbegin`, node);
     }
+
+
   };
+
+
 })();

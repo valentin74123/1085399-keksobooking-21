@@ -55,5 +55,39 @@
     pricePerNight.min = min;
   };
 
+  let showContent = function () {
+    let success = document.querySelector(`#success`);
 
+    let clone = success.content.cloneNode(true);
+
+    document.body.appendChild(clone);
+
+    window.util.closeModalWindow(`.success`);
+  };
+  let errorForm = function () {
+    let error = document.querySelector(`#error`);
+
+    let clone = error.content.cloneNode(true);
+
+    document.body.appendChild(clone);
+
+    let errorButton = document.querySelector(`.error__button`);
+    errorButton.addEventListener(`click`, function () {
+      document.querySelector(`.error`).remove();
+    }, {once: true});
+
+    window.util.closeModalWindow(`.error`);
+  };
+
+
+  let form = document.querySelector(`.ad-form`);
+  let submitHandler = function (evt) {
+    window.backend.save(new FormData(form), function () {
+      window.util.mapClose();
+      showContent();
+      form.reset();
+    }, errorForm);
+    evt.preventDefault();
+  };
+  form.addEventListener(`submit`, submitHandler);
 })();
