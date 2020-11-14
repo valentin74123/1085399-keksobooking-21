@@ -73,7 +73,7 @@
     apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
     apartmentElement.querySelector(`.popup__text--price`).textContent = apartment.offer.price + `₽/ночь`;
     apartmentElement.querySelector(`.popup__type`).textContent = window.data.translatedOfferTypes.get(apartment.offer.type);
-    apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;//
+    apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;
     apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
 
     let features = apartmentElement.querySelector(`.popup__features`);
