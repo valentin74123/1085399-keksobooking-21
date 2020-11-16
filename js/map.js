@@ -18,17 +18,6 @@
       };
 
 
-      // let apartmentSelect = function (housing, type) {
-      //   let select = document.querySelector(housing);
-      //   let apartmentOption = select.options[select.selectedIndex].value;
-      //   if (apartmentOption !== `any`){
-      //     allApartments = allApartments.filter(function (apartment) {
-      //       return apartmentOption === String(apartment.offer[`.type`]);
-      //     });
-      //   }
-      // }
-      // apartmentSelect(`#housing-type`, type);
-
       let mapFilters = document.querySelector(`.map__filters`);
       mapFilters.addEventListener(`change`, function (evt) {
         window.closeCard();

@@ -7,21 +7,20 @@ let mapFilters = document.querySelectorAll(`.map__filter`);
 let mainPin = document.querySelector(`.map__pin--main`);
 
 
-//  валидация формы
 let formElements = addForm.elements;
 
 window.util.mapClose();
 
-//  главный пин координаты
+
 window.pin.pinMainCoords(0.5);
 
 let openMap = function () {
   map.classList.remove(`map--faded`);
 
-  //  главный пин координаты при открытии
+
   window.pin.pinMainCoords(1);
 
-  //  валидация формы
+
   (function () {
     addForm.classList.remove(`ad-form--disabled`);
 
@@ -54,7 +53,7 @@ let openMap = function () {
 };
 window.util.mousedownPins(mainPin, openMap);
 
-//  активация по нажатию на главный пин
+
 window.util.mousedownOpen(mainPin, openMap);
 window.util.enterOpen(mainPin, openMap);
 
