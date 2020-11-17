@@ -5,15 +5,15 @@
   const URL_FORM = `https://21.javascript.pages.academy/keksobooking`;
 
 
-  let StatusCode = {
+  const StatusCode = {
     OK: 200
   };
-  let TIMEOUT_IN_MS = 10000;
+  const TIMEOUT_IN_MS = 10000;
 
   window.backend = {
     load(onLoad, onError) {
 
-      let xhr = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
       xhr.responseType = `json`;
 
       xhr.addEventListener(`load`, function () {
@@ -38,7 +38,7 @@
 
     save(data, onLoad, onError) {
 
-      let xhr = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
       xhr.responseType = `json`;
 
       xhr.addEventListener(`load`, function () {

@@ -5,10 +5,10 @@
   const LOCATION_PIN_HEIGHT = 70;
 
   const APARTMENTS_COUNT = 5;
-  let pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
-  let mapPins = document.querySelector(`.map__pins`);
+  const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+  const mapPins = document.querySelector(`.map__pins`);
 
-  let isEscEvent = function (button) {
+  const isEscEvent = function (button) {
     if (button.key === `Escape`) {
       window.closeCard();
     }
@@ -21,28 +21,29 @@
     window.removeEventListener(`keydown`, isEscEvent);
   };
 
-  let renderPin = function (apartment) {
-    let pinElement = pinTemplate.cloneNode(true);
-    let elMapPinImage = pinElement.querySelector(`img`);
+  const renderPin = function (apartment) {
+    const pinElement = pinTemplate.cloneNode(true);
+    const elMapPinImage = pinElement.querySelector(`img`);
 
     elMapPinImage.src = apartment.author.avatar;
     elMapPinImage.alt = apartment.offer.title;
 
-    pinElement.style.cssText = `left: ` + (apartment.location.x - (0.5 * LOCATION_PIN_WIDTH)) + `px; top: ` + (apartment.location.y - LOCATION_PIN_HEIGHT) + `px;`;
+    pinElement.style.left = apartment.location.x - (0.5 * LOCATION_PIN_WIDTH) + `px`;
+    pinElement.style.top = apartment.location.y - LOCATION_PIN_HEIGHT + `px`;
     return pinElement;
   };
 
   window.renderPins = function (apartments) {
-    let pins = document.querySelector(`.map__pins`).querySelectorAll(`button[type]`);
+    const pins = document.querySelector(`.map__pins`).querySelectorAll(`button[type]`);
 
     pins.forEach(function (pin) {
       pin.remove();
     });
 
-    let takeNumber = apartments.length > APARTMENTS_COUNT ? APARTMENTS_COUNT : apartments.length;
+    const takeNumber = apartments.length > APARTMENTS_COUNT ? APARTMENTS_COUNT : apartments.length;
 
     for (let i = 0; i < takeNumber; i++) {
-      let pin = renderPin(apartments[i]);
+      const pin = renderPin(apartments[i]);
 
       mapPins.appendChild(pin);
       pin.addEventListener(`click`, function (evt) {
@@ -55,7 +56,7 @@
 
         window.addEventListener(`keydown`, isEscEvent);
 
-        let buttonClose = mapPins.querySelector(`.popup`).querySelector(`.popup__close`);
+        const buttonClose = mapPins.querySelector(`.popup`).querySelector(`.popup__close`);
         buttonClose.addEventListener(`click`, function () {
           window.closeCard();
         });
@@ -64,10 +65,10 @@
   };
 
 
-  let renderCard = function (apartment) {
-    let card = document.querySelector(`#card`).content.querySelector(`.map__card`);
+  const renderCard = function (apartment) {
+    const card = document.querySelector(`#card`).content.querySelector(`.map__card`);
 
-    let apartmentElement = card.cloneNode(true);
+    const apartmentElement = card.cloneNode(true);
 
     apartmentElement.querySelector(`.popup__title`).textContent = apartment.offer.title;
     apartmentElement.querySelector(`.popup__text--address`).textContent = apartment.offer.address;
@@ -76,10 +77,10 @@
     apartmentElement.querySelector(`.popup__text--capacity`).textContent = apartment.offer.rooms + ` для ` + apartment.offer.guests;
     apartmentElement.querySelector(`.popup__text--time`).textContent = `Заезд после ` + apartment.offer.checkin + `, выезд до ` + apartment.offer.checkout;
 
-    let features = apartmentElement.querySelector(`.popup__features`);
-    let feature = features.querySelector(`.popup__feature`);
+    const features = apartmentElement.querySelector(`.popup__features`);
+    const feature = features.querySelector(`.popup__feature`);
     for (let i = 0; i < apartment.offer.features.length; i++) {
-      let featureElement = feature.cloneNode(true);
+      const featureElement = feature.cloneNode(true);
       featureElement.classList.add(`popup__feature--` + apartment.offer.features[i]);
       features.appendChild(featureElement);
     }
@@ -87,10 +88,10 @@
 
     apartmentElement.querySelector(`.popup__description`).textContent = apartment.offer.description;
 
-    let photos = apartmentElement.querySelector(`.popup__photos`);
-    let photo = photos.querySelector(`.popup__photo`);
+    const photos = apartmentElement.querySelector(`.popup__photos`);
+    const photo = photos.querySelector(`.popup__photo`);
     for (let i = 0; i < apartment.offer.photos.length; i++) {
-      let photoElement = photo.cloneNode(true);
+      const photoElement = photo.cloneNode(true);
       photoElement.src = apartment.offer.photos[i];
       photos.appendChild(photoElement);
     }
@@ -102,7 +103,7 @@
   };
 
   window.openCard = function (apartment) {
-    let card = renderCard(apartment);
+    const card = renderCard(apartment);
     mapPins.appendChild(card);
   };
 })();

@@ -1,30 +1,37 @@
 'use strict';
 
 (function () {
+  const BUNGALOW_MIN_PRICE = 0;
+  const FLAT_MIN_PRICE = 1000;
+  const HOUSE_MIN_PRICE = 5000;
+  const PALACE_MIN_PRICE = 10000;
+
   window.form = {
-    getElemtsDisabled(elements) {
+    getElementsDisabled(elements) {
       for (let i = 0; i < elements.length; ++i) {
-        elements[i].setAttribute(`disabled`, `disabled`);
+        elements[i].disabled = true;
       }
+      addresInput.readOnly = true;
     },
-    getElemtsUnDisabled(elements) {
+    getElementsEnabled(elements) {
       for (let i = 0; i < elements.length; ++i) {
-        elements[i].removeAttribute(`disabled`);
+        elements[i].disabled = false;
       }
+      addresInput.readOnly = true;
     },
 
     typeOfHousing: document.querySelector(`#type`),
 
     changePricePerNight() {
-      let typeOfHousingOption = window.form.typeOfHousing.options[window.form.typeOfHousing.selectedIndex].value;
+      const typeOfHousingOption = window.form.typeOfHousing.options[window.form.typeOfHousing.selectedIndex].value;
       if (typeOfHousingOption === `bungalow`) {
-        priceValue(`0`, 0);
+        getPriceValue(String(BUNGALOW_MIN_PRICE), BUNGALOW_MIN_PRICE);
       } else if (typeOfHousingOption === `flat`) {
-        priceValue(`1000`, 1000);
+        getPriceValue(String(FLAT_MIN_PRICE), FLAT_MIN_PRICE);
       } else if (typeOfHousingOption === `house`) {
-        priceValue(`5000`, 5000);
+        getPriceValue(String(HOUSE_MIN_PRICE), HOUSE_MIN_PRICE);
       } else if (typeOfHousingOption === `palace`) {
-        priceValue(`10000`, 10000);
+        getPriceValue(String(PALACE_MIN_PRICE), PALACE_MIN_PRICE);
       }
     },
 
@@ -37,56 +44,87 @@
     roomNumber: document.querySelector(`#room_number`),
     capacity: document.querySelector(`#capacity`),
     checkOption() {
-      let roomNumberOption = window.form.roomNumber.options[window.form.roomNumber.selectedIndex].value;
-      let capacityOption = window.form.capacity.options[window.form.capacity.selectedIndex].value;
-      if (roomNumberOption !== capacityOption) {
-        window.form.roomNumber.setCustomValidity(`Количество комнат и мест должны быть равны!`);
-      } else {
-        window.form.roomNumber.setCustomValidity(``);
+      const roomNumberOption = window.form.roomNumber.options[window.form.roomNumber.selectedIndex].value;
+      const capacityOptions = document.querySelector(`#capacity`).querySelectorAll(`option`);
+      if (roomNumberOption === `1`) {
+        capacityOptions[0].disabled = true;
+        capacityOptions[1].disabled = true;
+        capacityOptions[2].disabled = false;
+        capacityOptions[3].disabled = true;
+      } else if (roomNumberOption === `2`) {
+        capacityOptions[0].disabled = true;
+        capacityOptions[1].disabled = false;
+        capacityOptions[2].disabled = false;
+        capacityOptions[3].disabled = true;
+      } else if (roomNumberOption === `3`) {
+        capacityOptions[0].disabled = false;
+        capacityOptions[1].disabled = false;
+        capacityOptions[2].disabled = false;
+        capacityOptions[3].disabled = true;
+      } else if (roomNumberOption === `100`) {
+        capacityOptions[0].disabled = true;
+        capacityOptions[1].disabled = true;
+        capacityOptions[2].disabled = true;
+        capacityOptions[3].disabled = false;
       }
     }
   };
 
+  const addresInput = document.querySelector(`#address`);
 
-  let pricePerNight = document.querySelector(`#price`);
+  const resetBottun = document.querySelector(`.ad-form__reset`);
 
-  let priceValue = function (placeholder, min) {
+  resetBottun.addEventListener(`click`, function () {
+    window.util.mapClose();
+  });
+
+  const pricePerNight = document.querySelector(`#price`);
+
+  const getPriceValue = function (placeholder, min) {
     pricePerNight.placeholder = placeholder;
     pricePerNight.min = min;
   };
 
-  let showContent = function () {
-    let success = document.querySelector(`#success`);
 
-    let clone = success.content.cloneNode(true);
+  const main = document.querySelector(`main`);
+  const showContent = function () {
+    const success = document.querySelector(`#success`);
 
-    document.body.appendChild(clone);
+    const clone = success.content.cloneNode(true);
+
+    main.appendChild(clone);
 
     window.util.closeModalWindow(`.success`);
   };
-  let errorForm = function () {
-    let error = document.querySelector(`#error`);
+  const getErrorForm = function () {
+    const error = document.querySelector(`#error`);
 
-    let clone = error.content.cloneNode(true);
+    const clone = error.content.cloneNode(true);
 
-    document.body.appendChild(clone);
+    main.appendChild(clone);
 
-    let errorButton = document.querySelector(`.error__button`);
-    errorButton.addEventListener(`click`, function () {
+
+    const errorButton = document.querySelector(`.error__button`);
+    window.clickOnErrorButton = function () {
       document.querySelector(`.error`).remove();
-    }, {once: true});
+      errorButton.removeEventListener(`click`, window.clickOnErrorButton);
+      document.removeEventListener(`click`, window.removedClickEvent);
+      document.removeEventListener(`keydown`, window.removedEscEvent);
+    };
+    errorButton.addEventListener(`click`, window.clickOnErrorButton);
+
 
     window.util.closeModalWindow(`.error`);
   };
 
 
-  let form = document.querySelector(`.ad-form`);
-  let submitHandler = function (evt) {
+  const form = document.querySelector(`.ad-form`);
+  const submitHandler = function (evt) {
     window.backend.save(new FormData(form), function () {
-      window.util.mapClose();
       showContent();
       form.reset();
-    }, errorForm);
+      window.util.mapClose();
+    }, getErrorForm);
     evt.preventDefault();
   };
   form.addEventListener(`submit`, submitHandler);
