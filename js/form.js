@@ -6,6 +6,20 @@
   const HOUSE_MIN_PRICE = 5000;
   const PALACE_MIN_PRICE = 10000;
 
+  const typeOfHousing = {
+    bungalow: `bungalow`,
+    flat: `flat`,
+    house: `house`,
+    palace: `palace`
+  };
+
+  const roomNumber = {
+    one: `1`,
+    two: `2`,
+    three: `3`,
+    hundred: `100`
+  };
+
   window.form = {
     getElementsDisabled(elements) {
       for (let i = 0; i < elements.length; ++i) {
@@ -24,13 +38,13 @@
 
     changePricePerNight() {
       const typeOfHousingOption = window.form.typeOfHousing.options[window.form.typeOfHousing.selectedIndex].value;
-      if (typeOfHousingOption === `bungalow`) {
+      if (typeOfHousingOption === typeOfHousing.bungalow) {
         getPriceValue(String(BUNGALOW_MIN_PRICE), BUNGALOW_MIN_PRICE);
-      } else if (typeOfHousingOption === `flat`) {
+      } else if (typeOfHousingOption === typeOfHousing.flat) {
         getPriceValue(String(FLAT_MIN_PRICE), FLAT_MIN_PRICE);
-      } else if (typeOfHousingOption === `house`) {
+      } else if (typeOfHousingOption === typeOfHousing.house) {
         getPriceValue(String(HOUSE_MIN_PRICE), HOUSE_MIN_PRICE);
-      } else if (typeOfHousingOption === `palace`) {
+      } else if (typeOfHousingOption === typeOfHousing.palace) {
         getPriceValue(String(PALACE_MIN_PRICE), PALACE_MIN_PRICE);
       }
     },
@@ -44,28 +58,38 @@
     roomNumber: document.querySelector(`#room_number`),
     capacity: document.querySelector(`#capacity`),
     checkOption() {
+
       const roomNumberOption = window.form.roomNumber.options[window.form.roomNumber.selectedIndex].value;
       const capacityOptions = document.querySelector(`#capacity`).querySelectorAll(`option`);
-      if (roomNumberOption === `1`) {
+      if (roomNumberOption === roomNumber.one) {
         capacityOptions[0].disabled = true;
         capacityOptions[1].disabled = true;
         capacityOptions[2].disabled = false;
         capacityOptions[3].disabled = true;
-      } else if (roomNumberOption === `2`) {
+      } else if (roomNumberOption === roomNumber.two) {
         capacityOptions[0].disabled = true;
         capacityOptions[1].disabled = false;
         capacityOptions[2].disabled = false;
         capacityOptions[3].disabled = true;
-      } else if (roomNumberOption === `3`) {
+      } else if (roomNumberOption === roomNumber.three) {
         capacityOptions[0].disabled = false;
         capacityOptions[1].disabled = false;
         capacityOptions[2].disabled = false;
         capacityOptions[3].disabled = true;
-      } else if (roomNumberOption === `100`) {
+      } else if (roomNumberOption === roomNumber.hundred) {
         capacityOptions[0].disabled = true;
         capacityOptions[1].disabled = true;
         capacityOptions[2].disabled = true;
         capacityOptions[3].disabled = false;
+      }
+
+
+      for (let i = 0; i < capacityOptions.length; i++) {
+        if (capacityOptions[i].disabled === false) {
+
+          capacityOptions[i].selected = true;
+          break;
+        }
       }
     }
   };

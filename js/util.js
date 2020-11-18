@@ -15,6 +15,7 @@
   const START_PIN_VALUE_Y = 417;
 
   const DEBOUNCE_INTERVAL = 500;
+  let lastTimeout;
 
   const map = document.querySelector(`.map`);
   const mapFilters = document.querySelectorAll(`.map__filter`);
@@ -147,7 +148,8 @@
       });
 
       const mainPin = document.querySelector(`.map__pin--main`);
-      mainPin.style = `left: ` + START_PIN_COORDS_X + `px; top: ` + START_PIN_COORDS_Y + `px;`;
+      mainPin.style.left = START_PIN_COORDS_X + `px`;
+      mainPin.style.top = START_PIN_COORDS_Y + `px`;
 
       const addresInput = document.querySelector(`#address`);
       addresInput.value = START_PIN_VALUE_X + `, ` + START_PIN_VALUE_Y;
@@ -190,7 +192,7 @@
 
 
     debounce(cb, apartments) {
-      let lastTimeout;
+
       if (lastTimeout) {
         window.clearTimeout(lastTimeout);
       }
